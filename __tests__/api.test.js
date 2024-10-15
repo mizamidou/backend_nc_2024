@@ -3,10 +3,10 @@ const app= require('../app')
 const db= require('../db/connection')
 const seed =require('../db/seeds/seed')
 const testData= require('../db/data/test-data')
-const fs=require('fs').promises
 
-beforeEach(() => {seed(testData)})
-afterAll(() =>db.end())
+
+beforeEach(() => {return seed(testData)})
+afterAll(() => db.end())
 
 
 
@@ -17,20 +17,30 @@ describe("api/topics" ,()=>{
         .expect(200)
         .then((response) =>{
             expect(Array.isArray(response.body.topics)).toBe(true)
-            expect(response.body.length).toBe(3)
+            expect(response.body.topics.length).toBe(3)
             response.body.topics.forEach((topic) =>{
             expect(typeof topic.slug).toBe('string')
             expect(typeof topic.description).toBe('string')
             })
         })
     })
-    
-    test("the request is returning invalid parameters", ()=>{
+    test("GET:non existing route returns 404", ()=>{
         return request(app)
-        .get('/api/topics')
-        .expect(400)
+        .get('/api/topics/notARoute')
+        .expect(404)
         .then((response) =>{
-            expect(response.body.msg).toBe('Bad request')
+            expect(response.body.msg).toBe('The request root doesnt exist')
+            })
+        })
+
+
+    test("GET:invalid slug has been provided", ()=>{
+        return request(app)
+        .get('/api/topics/invalidSlug')
+        .expect(404)
+        .then((response) =>{
+            //expect(response.body.status).toBe(404)
+            expect(response.body.msg).toBe('Invalid point')
             })
         })
 })
