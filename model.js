@@ -6,8 +6,3 @@ exports.takeTheTopics= () =>{
 
     })
 }
-exports.takeTheSlug =(slugWord) =>{
-    return db.query('SELECT * FROM topics WHERE slug= $1;',[slugWord]).then ((result) =>{
-        return result.rows[0]
-    })
-}
