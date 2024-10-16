@@ -1,5 +1,6 @@
 const fs=require('fs').promises
-const {takeTheTopics}= require('./model')
+const {takeTheTopics,takeTheArticleId,takeTheArticles}= require('./model')
+
 const path=require('path')
 
 exports.getApi= (req,res,next) =>{
@@ -26,4 +27,27 @@ exports.getTopics= (req,res,next) =>{
 }
 
 
+exports.getArticleId= (req,res,next) =>{
+    const {article_id}= req.params
+    if(!article_id || isNaN(article_id)){
+        res.status(400).send({msg:'Invalid point'})}
+    takeTheArticleId(article_id)
+    .then((articleArray) =>{
+        const article= articleArray[0]
+        res.status(200).send({article})
+    })
+    .catch((error) =>{
+        next(error)
+    })
+}
+
+exports.getAllArticles= (req,res,next) =>{
+    takeTheArticles()
+    .then((articles) =>{
+        res.status(200).send({articles})
+    })
+    .catch((error) =>{
+        next(error)
+    })
+}
 
