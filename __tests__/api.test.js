@@ -4,6 +4,8 @@ const db= require('../db/connection')
 const seed =require('../db/seeds/seed')
 const testData= require('../db/data/test-data')
 const endpoints= require('../endpoints.json')
+const comments = require('../db/data/test-data/comments')
+const jest_sorted= require('jest-sorted')
 
 beforeEach(() => {return seed(testData)})
 afterAll(() => db.end())
@@ -105,5 +107,49 @@ describe('GET /api/articles', ()=>{
             })
         })
     })
+    test('GET:return articles sorted by date in descending order', ()=>{
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then ((response) =>{
+            expect(response.body.articles).toBeSortedBy('created_at',{descending:true})
+        })
+    })
  })
 
+describe(" GET /api/articles/:article_id/comments", () =>{
+    test('GET all comments from an article with properties votes, ,author,body', ()=>{
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then((response) =>{
+            const comments= response.body.comments
+            expect(Array.isArray(comments)).toBe(true)
+            comments.forEach((comment) =>{
+            expect(typeof comment.votes).toBe('number')
+            expect(typeof comment.author).toBe('string')
+            expect(typeof comment.body).toBe('string')
+            })
+        })
+    })
+    test('GET all comments from a most recent one', ()=>{
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then((response) =>{
+            const comments=response.body.comments
+            expect(comments).toBeSortedBy('created_at',{descending:true})
+            
+        })
+    })
+    test('GET no comments for an article', ()=>{
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then((response) =>{
+            const comments= response.body.comments
+            expect(comments.length).toBe(0)
+            
+        })
+    })
+})

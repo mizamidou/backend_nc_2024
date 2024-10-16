@@ -1,5 +1,5 @@
 const fs=require('fs').promises
-const {takeTheTopics,takeTheArticleId,takeTheArticles}= require('./model')
+const {takeTheTopics,takeTheArticleId,takeTheArticles,takeAllComments}= require('./model')
 
 const path=require('path')
 
@@ -49,5 +49,13 @@ exports.getAllArticles= (req,res,next) =>{
     .catch((error) =>{
         next(error)
     })
+}
+exports.getAllComments= (req,res,next)=>{
+    const {article_id}= req.params;
+    takeAllComments(article_id)
+    .then((comments) =>{
+        res.status(200).send({comments})
+    })
+    .catch(next)
 }
 

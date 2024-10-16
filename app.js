@@ -1,6 +1,6 @@
 const express= require('express')
 const app= express()
-const {getApi, getTopics, getArticleId, getAllArticles}= require('./controllers')
+const {getApi, getTopics, getArticleId, getAllArticles, getAllComments}= require('./controllers')
 
 
 //Router setup
@@ -17,7 +17,7 @@ app.get('/api/articles/:article_id', getArticleId)
 
 app.get('/api/articles',getAllArticles)
 
-
+app.get('/api/articles/:article_id/comments',getAllComments)
 
 
 app.get('*', (req,res) =>{
