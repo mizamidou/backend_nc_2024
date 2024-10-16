@@ -1,5 +1,6 @@
 const fs=require('fs').promises
 const {takeTheTopics,takeTheArticleId,takeTheArticles}= require('./model')
+
 const path=require('path')
 
 exports.getApi= (req,res,next) =>{
@@ -25,6 +26,7 @@ exports.getTopics= (req,res,next) =>{
     })
 }
 
+
 exports.getArticleId= (req,res,next) =>{
     const {article_id}= req.params
     if(!article_id || isNaN(article_id)){
@@ -48,3 +50,4 @@ exports.getAllArticles= (req,res,next) =>{
         next(error)
     })
 }
+

@@ -16,6 +16,7 @@ describe("api/topics" ,()=>{
         .get('/api/topics')
         .expect(200)
         .then((response) =>{
+            console.log(response.body.topics)
             expect(Array.isArray(response.body.topics)).toBe(true)
             expect(response.body.topics.length).toBe(3)
             response.body.topics.forEach((topic) =>{
@@ -105,3 +106,4 @@ describe('GET /api/articles', ()=>{
         })
     })
  })
+
