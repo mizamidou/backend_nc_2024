@@ -1,5 +1,5 @@
 const fs=require('fs').promises
-const {takeTheTopics,takeTheArticleId,takeTheArticles,takeAllComments}= require('./model')
+const {takeTheTopics,takeTheArticleId,takeTheArticles,takeAllComments,addAComment, addAVote}= require('./model')
 
 const path=require('path')
 
@@ -59,3 +59,49 @@ exports.getAllComments= (req,res,next)=>{
     .catch(next)
 }
 
+exports.sendAComment= (req,res,next) =>{
+    const {article_id} = req.params;
+    const {author,body}= req.body;
+
+    if (body===' '){
+        return res.status(400).send({msg:'Bad Request:comment is missing'})
+    }
+    if (author===' '){
+        return res.status(400).send({msg:'Bad Request:username is missing'})
+    }
+    addAComment(article_id, author, body)
+    .then((comments) =>{
+        res.status(201).send({comments})
+    })
+    .catch((error) =>{
+        if(error.status){
+            res.status(error.status).send({msg:'error message'})
+        }else{
+            next(error)
+        }
+    })
+}
+
+
+exports.updateAnArticle= (req,res,next) =>{
+    const {article_id} = req.params;
+    const{inc_votes}= req.body
+
+    if(inc_votes===null){
+        res.status(400).send({msg:'Vote is missing'})
+    }
+    if(inc_votes!==-100 && inc_votes!==1){
+        res.status(400).send({msg:'Invalid number of vote'})
+    }
+    addAVote(article_id,inc_votes)
+        .then((updatedArticle) =>{
+            return res.status(200).send(updatedArticle)
+        })
+        .catch((error) =>{
+            if(error.status){
+                res.status(error.status).send({msg:'error message'})
+            }else{
+                next(error)
+            }
+        })
+}

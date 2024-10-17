@@ -18,7 +18,6 @@ describe("api/topics" ,()=>{
         .get('/api/topics')
         .expect(200)
         .then((response) =>{
-            console.log(response.body.topics)
             expect(Array.isArray(response.body.topics)).toBe(true)
             expect(response.body.topics.length).toBe(3)
             response.body.topics.forEach((topic) =>{
@@ -150,6 +149,88 @@ describe(" GET /api/articles/:article_id/comments", () =>{
             const comments= response.body.comments
             expect(comments.length).toBe(0)
             
+        })
+    })
+})
+describe("POST:/api/articles/:article_id/comments", ()=>{
+    test("POST:posted comment with username and body property", ()=>{
+        const newComm={author:'icellusedkars', body:" I carry a log — yes. Is it funny to you? It is not to me."}
+        return request (app)
+        .post ('/api/articles/1/comments')
+        .send(newComm)
+        .expect(201)
+        .then((response) =>{
+            const comments=response.body.comments
+            expect(comments.author).toBe('icellusedkars')
+            expect(comments.body).toBe(" I carry a log — yes. Is it funny to you? It is not to me.")
+        })
+    })
+    test("POST:posted comment with not writing username ", ()=>{
+        const newComm={author:' ', body:'I carry a log — yes. Is it funny to you? It is not to me.'}
+        return request (app)
+        .post ('/api/articles/1/comments')
+        .send(newComm)
+        .expect(400)
+        .then((response) =>{
+            expect(response.body.msg).toBe('Bad Request:username is missing')
+            
+        })
+    })
+    test("POST:posted comment wihtout a body ", ()=>{
+        const newComm={author:'icellusedkars ', body:' '}
+        return request (app)
+        .post ('/api/articles/1/comments')
+        .send(newComm)
+        .expect(400)
+        .then((response) =>{
+            expect(response.body.msg).toBe('Bad Request:comment is missing')
+            
+        })
+    })
+})
+
+describe('PATCH: /api/articles/:article_id', ()=>{
+    test('PATCH:update am article with an object {inv_votes:1} based on newVotes', ()=>{
+        const newVote={inc_votes: 1}
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVote)
+        .expect(200)
+        .then((response) =>{
+            expect(response.body.votes).toBe(101)
+        })
+    })
+    test('PATCH:update am article with an object {inv_votes:-100} based on newVotes', ()=>{
+        const newVote={inc_votes:-100}
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVote)
+        .expect(200)
+        .then((response) =>{
+            expect(response.body.votes).toBe(0)
+        })
+    })
+
+    test('PATCH:trying to increment but there is not correct numnber in the vote', ()=>{
+        const newVote={inc_votes:9}
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVote)
+        .expect(400)
+        .then((response) =>{
+            expect(response.body.msg).toBe('Invalid number of vote')
+        })
+    })
+ 
+
+    test('PATCH:there is no vote',()=>{
+        const newVote={inc_votes:null}
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVote)
+        .expect(400)
+        .then((response) =>{
+            expect(response.body.msg).toBe('Vote is missing')
         })
     })
 })

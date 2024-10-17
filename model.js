@@ -52,3 +52,26 @@ exports.takeAllComments = (article_id) => {
     })
 }
 
+exports.addAComment = (article_id, author, body) =>{
+    return db.query(`
+        INSERT INTO comments (article_id, author, body)
+        VALUES ($1, $2, $3)
+        RETURNING *;
+        `,[article_id, author, body])
+    .then((result) =>{
+        return result.rows[0];
+    })
+    
+}
+
+exports.addAVote= (article_id, inc_votes) =>{
+    return db.query(`
+        UPDATE articles 
+        SET votes= votes + $2
+        WHERE article_id= $1
+        RETURNING *;
+        `, [article_id, inc_votes])
+    .then((result) =>{
+        return result.rows[0];
+    })
+}
