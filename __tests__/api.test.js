@@ -7,6 +7,7 @@ const endpoints= require('../endpoints.json')
 const comments = require('../db/data/test-data/comments')
 const jest_sorted= require('jest-sorted')
 const Test = require('supertest/lib/test')
+const users = require('../db/data/test-data/users')
 
 beforeEach(() => {return seed(testData)})
 afterAll(() => db.end())
@@ -61,7 +62,6 @@ describe("GET /api/articles/:article_id", () =>{
         .expect(200)
         .then((response) =>{
                 const article= response.body.article
-                console.log(article)
                 expect(typeof article.author).toBe('string')
                 expect(typeof article.title).toBe('string')
                 expect(typeof article.article_id).toBe('number')
@@ -250,9 +250,33 @@ describe('DELETE: /api/comments/:comment_id', ()=>{
     test('DELETE: a rescourse that doesnt exist', ()=>{
         return request(app)
         .delete('/api/comments/999999')
-        .expect(400)
+        .expect(404)
         .then((response) =>{
             expect(response.body.msg).toBe('The comment doesnt exist')
+        })
+    })
+    test('DELETE: invalid comment_id', ()=>{
+        return request(app)
+        .delete('/api/comments/isNotValid')
+        .expect(400)
+        .then((response) =>{
+            expect(response.body.msg).toBe("Bad Request")
+        })
+    })
+})
+
+describe("GET:/api/users", ()=>{
+    test("200:get all users with username,name,avatar_url properties", ()=>{
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((response) =>{
+            const users= response.body.users
+            expect(Array.isArray(users)).toBe(true)
+            users.forEach((user) =>{
+            expect(typeof user.username).toBe('string')
+            expect(typeof user.name).toBe('string')
+            expect(typeof user.avatar_url).toBe('string')})
         })
     })
 })
