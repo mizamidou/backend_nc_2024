@@ -238,3 +238,21 @@ describe('PATCH: /api/articles/:article_id', ()=>{
     })
 })
 
+describe('DELETE: /api/comments/:comment_id', ()=>{
+    test('DELETE:delete a given comment', ()=>{
+        return request(app)
+        .delete('/api/comments/1')
+        .expect(204)
+        .then((response) =>{
+            expect(response.body).toEqual({})
+        })
+    })
+    test('DELETE: a rescourse that doesnt exist', ()=>{
+        return request(app)
+        .delete('/api/comments/999999')
+        .expect(400)
+        .then((response) =>{
+            expect(response.body.msg).toBe('The comment doesnt exist')
+        })
+    })
+})
