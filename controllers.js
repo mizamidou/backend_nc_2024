@@ -1,6 +1,8 @@
 const fs=require('fs').promises
 const {takeTheTopics,takeTheArticleId,takeTheArticles,takeAllComments,addAComment, addAVote}= require('./model')
 
+
+
 const path=require('path')
 
 exports.getApi= (req,res,next) =>{
@@ -83,6 +85,7 @@ exports.sendAComment= (req,res,next) =>{
 }
 
 
+
 exports.updateAnArticle= (req,res,next) =>{
     const {article_id} = req.params;
     const{inc_votes}= req.body
@@ -105,3 +108,4 @@ exports.updateAnArticle= (req,res,next) =>{
             }
         })
 }
+

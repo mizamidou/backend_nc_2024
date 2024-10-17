@@ -6,6 +6,7 @@ const testData= require('../db/data/test-data')
 const endpoints= require('../endpoints.json')
 const comments = require('../db/data/test-data/comments')
 const jest_sorted= require('jest-sorted')
+const Test = require('supertest/lib/test')
 
 beforeEach(() => {return seed(testData)})
 afterAll(() => db.end())
@@ -152,6 +153,7 @@ describe(" GET /api/articles/:article_id/comments", () =>{
         })
     })
 })
+
 describe("POST:/api/articles/:article_id/comments", ()=>{
     test("POST:posted comment with username and body property", ()=>{
         const newComm={author:'icellusedkars', body:" I carry a log — yes. Is it funny to you? It is not to me."}
@@ -188,6 +190,7 @@ describe("POST:/api/articles/:article_id/comments", ()=>{
         })
     })
 })
+
 
 describe('PATCH: /api/articles/:article_id', ()=>{
     test('PATCH:update am article with an object {inv_votes:1} based on newVotes', ()=>{
@@ -234,3 +237,4 @@ describe('PATCH: /api/articles/:article_id', ()=>{
         })
     })
 })
+

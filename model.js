@@ -64,6 +64,7 @@ exports.addAComment = (article_id, author, body) =>{
     
 }
 
+
 exports.addAVote= (article_id, inc_votes) =>{
     return db.query(`
         UPDATE articles 
@@ -75,3 +76,4 @@ exports.addAVote= (article_id, inc_votes) =>{
         return result.rows[0];
     })
 }
+
