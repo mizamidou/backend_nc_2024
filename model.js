@@ -86,3 +86,10 @@ exports.getOneComment= (comment_id) =>{
         return result.rows[0];
     })
 }
+
+exports.getAUser=() =>{
+    return db.query(`SELECT username, name, avatar_url FROM users;`)
+    .then((result) =>{
+        return result.rows;
+    })
+}

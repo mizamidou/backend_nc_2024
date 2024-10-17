@@ -1,6 +1,6 @@
 const fs=require('fs').promises
 const comments = require('./db/data/test-data/comments')
-const {takeTheTopics,takeTheArticleId,takeTheArticles,takeAllComments,addAComment, addAVote,getOneComment}= require('./model')
+const {takeTheTopics,takeTheArticleId,takeTheArticles,takeAllComments,addAComment, addAVote,getOneComment,getAUser}= require('./model')
 
 
 
@@ -115,7 +115,7 @@ exports.getDeletedComment= (req,res,next) =>{
     getOneComment(comment_id)
     .then((response) =>{
         if(!response){
-            return res.status(400).send({msg:'The comment doesnt exist'})
+            return res.status(404).send({msg:'The comment doesnt exist'})
         }
         return res.status(204).send()
     })
@@ -126,4 +126,13 @@ exports.getDeletedComment= (req,res,next) =>{
             next(error)
         }
     })
+}
+
+exports.getUsers= (req,res,next) =>{
+    getAUser()
+    .then((users) =>{
+        return res.status(200).send({users})
+    })
+    .catch(next)
+
 }
