@@ -1,6 +1,6 @@
 const express= require('express')
 const app= express()
-const {getApi, getTopics, getArticleId, getAllArticles, getAllComments}= require('./controllers')
+const {getApi, getTopics, getArticleId, getAllArticles, getAllComments, sendAComment}= require('./controllers')
 
 
 //Router setup
@@ -18,6 +18,8 @@ app.get('/api/articles/:article_id', getArticleId)
 app.get('/api/articles',getAllArticles)
 
 app.get('/api/articles/:article_id/comments',getAllComments)
+
+app.post('/api/articles/:article_id/comments', sendAComment)
 
 
 app.get('*', (req,res) =>{
