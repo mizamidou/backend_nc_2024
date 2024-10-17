@@ -1,5 +1,5 @@
 const fs=require('fs').promises
-const {takeTheTopics,takeTheArticleId,takeTheArticles,takeAllComments}= require('./model')
+const {takeTheTopics,takeTheArticleId,takeTheArticles,takeAllComments, addAComment}= require('./model')
 
 const path=require('path')
 
@@ -57,5 +57,28 @@ exports.getAllComments= (req,res,next)=>{
         res.status(200).send({comments})
     })
     .catch(next)
+}
+
+exports.sendAComment= (req,res,next) =>{
+    const {article_id} = req.params;
+    const {author,body}= req.body;
+
+    if (body===' '){
+        return res.status(400).send({msg:'Bad Request:comment is missing'})
+    }
+    if (author===' '){
+        return res.status(400).send({msg:'Bad Request:username is missing'})
+    }
+    addAComment(article_id, author, body)
+    .then((comments) =>{
+        res.status(201).send({comments})
+    })
+    .catch((error) =>{
+        if(error.status){
+            res.status(error.status).send({msg:'error message'})
+        }else{
+            next(error)
+        }
+    })
 }
 

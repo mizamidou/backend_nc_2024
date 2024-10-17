@@ -6,6 +6,7 @@ const testData= require('../db/data/test-data')
 const endpoints= require('../endpoints.json')
 const comments = require('../db/data/test-data/comments')
 const jest_sorted= require('jest-sorted')
+const Test = require('supertest/lib/test')
 
 beforeEach(() => {return seed(testData)})
 afterAll(() => db.end())
@@ -149,6 +150,43 @@ describe(" GET /api/articles/:article_id/comments", () =>{
         .then((response) =>{
             const comments= response.body.comments
             expect(comments.length).toBe(0)
+            
+        })
+    })
+})
+
+describe("POST:/api/articles/:article_id/comments", ()=>{
+    test("POST:posted comment with username and body property", ()=>{
+        const newComm={author:'icellusedkars', body:" I carry a log — yes. Is it funny to you? It is not to me."}
+        return request (app)
+        .post ('/api/articles/1/comments')
+        .send(newComm)
+        .expect(201)
+        .then((response) =>{
+            const comments=response.body.comments
+            expect(comments.author).toBe('icellusedkars')
+            expect(comments.body).toBe(" I carry a log — yes. Is it funny to you? It is not to me.")
+        })
+    })
+    test("POST:posted comment with not writing username ", ()=>{
+        const newComm={author:' ', body:'I carry a log — yes. Is it funny to you? It is not to me.'}
+        return request (app)
+        .post ('/api/articles/1/comments')
+        .send(newComm)
+        .expect(400)
+        .then((response) =>{
+            expect(response.body.msg).toBe('Bad Request:username is missing')
+            
+        })
+    })
+    test("POST:posted comment wihtout a body ", ()=>{
+        const newComm={author:'icellusedkars ', body:' '}
+        return request (app)
+        .post ('/api/articles/1/comments')
+        .send(newComm)
+        .expect(400)
+        .then((response) =>{
+            expect(response.body.msg).toBe('Bad Request:comment is missing')
             
         })
     })
