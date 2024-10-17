@@ -1,5 +1,6 @@
 const fs=require('fs').promises
-const {takeTheTopics,takeTheArticleId,takeTheArticles,takeAllComments,addAComment, addAVote}= require('./model')
+const comments = require('./db/data/test-data/comments')
+const {takeTheTopics,takeTheArticleId,takeTheArticles,takeAllComments,addAComment, addAVote,getOneComment}= require('./model')
 
 
 
@@ -109,3 +110,20 @@ exports.updateAnArticle= (req,res,next) =>{
         })
 }
 
+exports.getDeletedComment= (req,res,next) =>{
+    const {comment_id}=req.params;
+    getOneComment(comment_id)
+    .then((response) =>{
+        if(!response){
+            return res.status(400).send({msg:'The comment doesnt exist'})
+        }
+        return res.status(204).send()
+    })
+    .catch((error) =>{
+        if(error.status){
+            res.status(error.status).send({msg:'error message'})
+        }else{
+            next(error)
+        }
+    })
+}
